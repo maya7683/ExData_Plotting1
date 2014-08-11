@@ -7,9 +7,9 @@ data <- all_data[(all_data$Date == "1/2/2007") | (all_data$Date == "2/2/2007"),]
 # format date and time
 data$DT <- strptime(paste(data$Date, data$Time), "%d/%m/%Y %H:%M:%S")
 
-data$Global_active_power <- as.numeric(as.character(data$Sub_metering_1))
-data$Global_active_power <- as.numeric(as.character(data$Sub_metering_2))
-data$Global_active_power <- as.numeric(as.character(data$Sub_metering_3))
+data$Sub_metering_1 <- as.numeric(as.character(data$Sub_metering_1))
+data$Sub_metering_2 <- as.numeric(as.character(data$Sub_metering_2))
+data$Sub_metering_3 <- as.numeric(as.character(data$Sub_metering_3))
 
 png(filename = "plot3.png", width = 480, height = 480)
 plot(data$DT, data$Sub_metering_1,type='l',col="black",xlab="",ylab="Energy sub metering")
