@@ -1,44 +1,32 @@
-source("load_data.R")
+# load data
+all_data <- read.table("household_power_consumption.txt",header=TRUE,sep=";")
 
+# subset data from 2007-02-01 and 2007-02-01
+data <- all_data[(all_data$Date == "1/2/2007") | (all_data$Date == "2/2/2007"),]
 
-plot4 <- function() {
+# format date and time
+data$DT <- strptime(paste(data$Date, data$Time), "%d/%m/%Y %H:%M:%S")
+data$Global_active_power <- as.numeric(as.character(data$Global_active_power))
+data$Global_reactive_power <- as.numeric(as.character(data$Global_reactive_power))
+data$Sub_metering_1 <- as.numeric(as.character(data$Sub_metering_1))
+data$Sub_metering_2 <- as.numeric(as.character(data$Sub_metering_2))
+data$Sub_metering_3 <- as.numeric(as.character(data$Sub_metering_3))
+
+# create plot file
+png("plot4.png", width=480, height=480)
   
-  # Make smaller data set if needed
-  if(!file.exists('input_data.rds'))
-    load_data()
-  
-  # Load dataset
-  input_data <- readRDS("input_data.rds")
-  
-  # Create plot file
-  png("plot4.png", width=480, height=480)
-  
-  # Make plot
-  par(mfrow=c(2,2))
-  # UL
-  plot(input_data$DT, input_data$GLOBAL_ACT_PWR,
-       type="l",
-       xlab="",
-       ylab="Global Active Power")
-  # UR
-  plot(input_data$DT, input_data$VOLTAGE, type="l",
-       xlab="datetime", ylab="Voltage")
-  # LL
-  plot(input_data$DT, input_data$SM1, type="l", col="black",
-       xlab="", ylab="Energy sub metering")
-  lines(input_data$DT, input_data$SM2, col="red")
-  lines(input_data$DT, input_data$SM3, col="blue")
-  legend("topright",
-         col=c("black", "red", "blue"),
-         c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"),
-         lty=1,
-         box.lwd=0)
-  # LR
-  plot(input_data$DT, input_data$GLOBAL_REACT_PWR, type="n",
-       xlab="datetime", ylab="Global_reactive_power")
-  lines(input_data$DT, input_data$GLOBAL_REACT_PWR)
-  
-  # Save and close file
-  dev.off()
-  
-}
+# make plot
+par(mfrow=c(2,2))
+# upper left
+plot(data$DT,data$Global_active_power,type="l",xlab="",ylab="Global Active Power")
+# upper right
+plot(data$DT, data$Voltage, type="l", xlab="datetime", ylab="Voltage")
+# lower left
+plot(data$DT, data$Sub_metering_1,type='l',col="black",xlab="",ylab="Energy sub metering")
+lines(data$DT, data$Sub_metering_2,col="red")
+lines(data$DT, data$Sub_metering_3,col="blue")
+legend("topright",col=c("black","red","blue"),c("Sub Metering 1","Sub Metering 2", "Sub Metering 3"),lty=1)
+# lower right
+plot(data$DT,data$Global_reactive_power,type="l",xlab="",ylab="Global Reactive Power")
+# Save and close file
+dev.off()
